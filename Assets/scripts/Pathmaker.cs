@@ -1,45 +1,70 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 // MAZE PROC GEN LAB
 // all students: complete steps 1-6, as listed in this file
 // optional: if you have extra time, complete the "extra tasks" to do at the very bottom
 
-// STEP 1: ======================================================================================
-// put this script on a Sphere... it will move around, and drop a path of floor tiles behind it
 
 public class Pathmaker : MonoBehaviour {
 
-// STEP 2: ============================================================================================
-// translate the pseudocode below
+   
+    //Variables:
+    private int counter = 0;
+    public Transform[] floorPrefab;
+    public Transform pathmakerSpherePrefab;
+   // public List<Transform> myTileList = new List<Transform>();
 
-//	DECLARE CLASS MEMBER VARIABLES:
-//	Declare a private integer called counter that starts at 0; 		// counter var will track how many floor tiles I've instantiated
-//	Declare a public Transform called floorPrefab, assign the prefab in inspector;
-//	Declare a public Transform called pathmakerSpherePrefab, assign the prefab in inspector; 		// you'll have to make a "pathmakerSphere" prefab later
 
+
+   
 
 	void Update () {
-//		If counter is less than 50, then:
-//			Generate a random number from 0.0f to 1.0f;
-//			If random number is less than 0.25f, then rotate myself 90 degrees;
-//				... Else if number is 0.25f-0.5f, then rotate myself -90 degrees;
-//				... Else if number is 0.99f-1.0f, then instantiate a pathmakerSpherePrefab clone at my current position;
-//			// end elseIf
 
-//			Instantiate a floorPrefab clone at current position;
-//			Move forward ("forward", as in, the direction I'm currently facing) by 5 units;
-//			Increment counter;
-//		Else:
-//			Destroy my game object; 		// self destruct if I've made enough tiles already
+        int floorCount = GameObject.FindGameObjectsWithTag("Floor").Length;
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("R is Pressed");
+            SceneManager.LoadScene("mainLabScene");
+        }
+
+        Debug.Log("Floor Counter: " + floorCount);
+        if (counter < 125 && floorCount < 500)
+        {
+            //Get a random number between 0 and 1
+            float i = Random.Range(0.0f, 1.0f);
+            // If the number is less than .25 move this way
+            if (i < .31f)
+            {
+                gameObject.transform.localEulerAngles += new Vector3 (Random.Range(-20, 0), 0, Random.Range(1, 5));
+            }
+            // if the number is between .25 and .50 move this way
+            else if (i > .31f &&  i  < .56f)
+            {
+                gameObject.transform.localEulerAngles += new Vector3 (Random.Range(10, -10), 0, Random.Range(-1, -5));
+            }
+            // if the number is .99 or 1 make a new pathmaker sphere
+            else if (i > .99f)
+            {
+                Instantiate(pathmakerSpherePrefab, gameObject.transform.position, Quaternion.Euler(0, 0, 0));
+            }
+            int randomIndex = Random.Range(0, floorPrefab.Length);
+            Transform newClone = (Transform)Instantiate(floorPrefab[randomIndex], gameObject.transform.position, gameObject.transform.rotation);
+            //Instantiate(floorPrefab, gameObject.transform.position, Quaternion.Euler(0, 0, 0));
+            this.transform.Translate(3, 0, 0);
+            counter++;
+            //newClone.GetComponent<Renderer>().material.color = Color.magenta;
+        }
+        else { Destroy(gameObject); }
+       
+        //	See how many Floors there are in the console
+        //Debug.Log("Floor Count:" + floorCount);
 	}
 
-} // end of class scope
-
-// MORE STEPS BELOW!!!........
-
-
+} 
 
 
 // STEP 3: =====================================================================================
@@ -69,17 +94,6 @@ public class Pathmaker : MonoBehaviour {
 // - randomize 2 more variables in Pathmaker.cs for each different Pathmaker... you would do this in Start()
 // - maybe randomize each pathmaker's lifetime? maybe randomize the probability it will turn right? etc. if there's any number in your code, you can randomize it if you move it into a variable
 
-
-
-// STEP 6:  =====================================================================================
-// art pass, usability pass
-
-// - move the game camera to a position high in the world, and then point it down, so we can see your world get generated
-// - CHANGE THE DEFAULT UNITY COLORS, PLEASE, I'M BEGGING YOU
-// - add more detail to your original floorTile placeholder -- and let it randomly pick one of 3 different floorTile models, etc. so for example, it could randomly pick a "normal" floor tile, or a cactus, or a rock, or a skull
-//		- MODEL 3 DIFFERENT TILES IN MAYA! DON'T STOP USING MAYA OR YOU'LL FORGET IT ALL
-//		- add a simple in-game restart button; let us press [R] to reload the scene and see a new level generation
-// - with Text UI, name your proc generation system ("AwesomeGen", "RobertGen", etc.) and display Text UI that tells us we can press [R]
 
 
 
